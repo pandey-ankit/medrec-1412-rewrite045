@@ -2,7 +2,7 @@ package com.oracle.medrec.facade.model;
 
 import com.oracle.medrec.model.Prescription;
 import com.oracle.medrec.model.Record;
-
+import java.io.Serial;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -15,6 +15,7 @@ import java.util.List;
 @XmlRootElement
 public class RecordSummary extends TransferObject {
 
+  @Serial
   private static final long serialVersionUID = 298734535L;
 
   private Long patientId;

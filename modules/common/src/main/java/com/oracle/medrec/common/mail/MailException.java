@@ -1,6 +1,7 @@
 package com.oracle.medrec.common.mail;
 
 import com.oracle.medrec.common.core.SystemException;
+import java.io.Serial;
 
 /**
  * @author Copyright (c) 2007, 2019, Oracle and/or its
@@ -8,6 +9,7 @@ import com.oracle.medrec.common.core.SystemException;
  */
 public class MailException extends SystemException {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   public MailException() {

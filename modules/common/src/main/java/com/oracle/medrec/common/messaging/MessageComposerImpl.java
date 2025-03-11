@@ -19,10 +19,10 @@ import java.io.Serializable;
 public class MessageComposerImpl implements MessageComposer {
 
   public Object extractPayload(Message message) throws JMSException {
-    if (message instanceof ObjectMessage) {
-      return ((ObjectMessage) message).getObject();
-    } else if (message instanceof TextMessage) {
-      return ((TextMessage) message).getText();
+    if (message instanceof ObjectMessage objectMessage) {
+      return objectMessage.getObject();
+    } else if (message instanceof TextMessage textMessage) {
+      return textMessage.getText();
     }
     throw new IllegalArgumentException("Unsupported message type: " + message.getClass().getName());
   }
@@ -32,8 +32,8 @@ public class MessageComposerImpl implements MessageComposer {
     if (payload instanceof String) {
       return context.createTextMessage(payload.toString());
     } else {
-      if (payload instanceof Serializable) {
-        return context.createObjectMessage((Serializable) payload);
+      if (payload instanceof Serializable serializable) {
+        return context.createObjectMessage(serializable);
       }
       throw new IllegalArgumentException("The instance to be wrapped in ObjectMessage isn't serializable: " + payload
           .getClass());

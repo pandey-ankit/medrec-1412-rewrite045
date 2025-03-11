@@ -1,6 +1,7 @@
 package com.oracle.medrec.service;
 
 import com.oracle.medrec.MedRecException;
+import java.io.Serial;
 
 /**
  * @author Copyright (c) 2007, 2019, Oracle and/or its
@@ -8,6 +9,7 @@ import com.oracle.medrec.MedRecException;
  */
 public class DuplicateSsnException extends MedRecException {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   private String ssn;

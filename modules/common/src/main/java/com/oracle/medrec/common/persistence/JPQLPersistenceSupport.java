@@ -83,8 +83,7 @@ public class JPQLPersistenceSupport {
     Query query = entityManager.createNamedQuery(namedQuery);
     int i = 1;
     for (Object propertyValue : propertyValues) {
-      if (propertyValue instanceof Property) {
-        Property property = (Property) propertyValue;
+      if (propertyValue instanceof Property property) {
         query.setParameter(property.name, property.value);
       } else {
         query.setParameter(i, propertyValue);

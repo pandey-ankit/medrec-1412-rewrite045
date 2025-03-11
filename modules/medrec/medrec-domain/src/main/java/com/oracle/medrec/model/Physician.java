@@ -1,5 +1,6 @@
 package com.oracle.medrec.model;
 
+import java.io.Serial;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -11,6 +12,7 @@ import javax.persistence.Table;
 @Table(name = "physicians")
 public class Physician extends RegularUser {
 
+  @Serial
   private static final long serialVersionUID = 2298019356529544739L;
 
 }

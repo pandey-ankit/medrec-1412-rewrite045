@@ -7,7 +7,7 @@ import com.oracle.medrec.model.Drug;
 import com.oracle.medrec.model.Prescription;
 import com.oracle.physician.service.RecordService;
 import com.oracle.physician.web.Constants;
-
+import java.io.Serial;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 @SessionScoped
 public class CreatingRecordController extends BasePhysicianPageController implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   private static final Logger LOGGER = Logger.getLogger(CreatingRecordController.class.getName());

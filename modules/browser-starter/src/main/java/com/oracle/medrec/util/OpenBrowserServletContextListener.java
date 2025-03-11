@@ -98,8 +98,7 @@ public class OpenBrowserServletContextListener implements ServletContextListener
         mbeanServer.addNotificationListener(serverRuntime, new NotificationListener() {
               @Override
               public void handleNotification(Notification notification, Object handback) {
-                if (notification instanceof AttributeChangeNotification) {
-                  AttributeChangeNotification attributeChange = (AttributeChangeNotification) notification;
+                if (notification instanceof AttributeChangeNotification attributeChange) {
                   if (RUNNING_STATE.equalsIgnoreCase((String) attributeChange.getNewValue())) {
                     browseTo(httpURL + contextPath + "/" + page);
                   }

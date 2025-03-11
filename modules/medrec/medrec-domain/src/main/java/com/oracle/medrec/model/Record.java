@@ -1,6 +1,8 @@
 package com.oracle.medrec.model;
 
 import javax.persistence.*;
+import com.oracle.medrec.model.Record;
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.LinkedList;
@@ -17,6 +19,7 @@ import java.util.List;
     ".date >= :startDate and r.date <= :endDate")})
 public class Record extends VersionedEntity {
 
+  @Serial
   private static final long serialVersionUID = -4395051789276646078L;
 
   private String diagnosis;

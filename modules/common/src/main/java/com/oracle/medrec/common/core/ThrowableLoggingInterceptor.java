@@ -35,8 +35,8 @@ public class ThrowableLoggingInterceptor {
       return invocationContext.proceed();
     } catch (Throwable t) {
       throwableLogger.log(t);
-      if (t instanceof Exception) {
-        throw (Exception) t;
+      if (t instanceof Exception exception) {
+        throw exception;
       } else {
         throw (Error) t;
       }

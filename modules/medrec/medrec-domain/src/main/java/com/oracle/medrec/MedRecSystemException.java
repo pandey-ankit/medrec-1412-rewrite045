@@ -1,11 +1,14 @@
 package com.oracle.medrec;
 
+import java.io.Serial;
+
 /**
  * @author Copyright (c) 2007, 2019, Oracle and/or its
  *         affiliates. All rights reserved.
  */
 public class MedRecSystemException extends RuntimeException {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   public MedRecSystemException() {

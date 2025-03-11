@@ -2,7 +2,7 @@ package com.oracle.medrec.facade.model;
 
 import com.oracle.medrec.model.PersonName;
 import com.oracle.medrec.model.Physician;
-
+import java.io.Serial;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class AuthenticatedPhysician extends TransferObject {
 
+  @Serial
   private static final long serialVersionUID = 654351313L;
 
   private Long id;

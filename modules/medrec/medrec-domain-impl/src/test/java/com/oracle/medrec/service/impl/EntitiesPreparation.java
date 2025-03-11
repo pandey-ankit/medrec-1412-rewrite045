@@ -1,7 +1,7 @@
 package com.oracle.medrec.service.impl;
 
 import com.oracle.medrec.model.*;
-
+import com.oracle.medrec.model.Record;
 import java.math.BigDecimal;
 import java.util.Date;
 

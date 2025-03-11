@@ -12,6 +12,11 @@
 	<name>medrec-jaxrs-facade-broker</name>
 	
 	<dependencies>
+    <dependency>
+      <groupId>jakarta.inject</groupId>
+      <artifactId>jakarta.inject-api</artifactId>
+      <version>1.0.3</version>
+    </dependency>
 		<dependency>
 			<groupId>com.oracle.weblogic.sample.medrec-javaee</groupId>
 			<artifactId>medrec-facade</artifactId>

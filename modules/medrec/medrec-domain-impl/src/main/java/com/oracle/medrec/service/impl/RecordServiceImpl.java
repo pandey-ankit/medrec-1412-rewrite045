@@ -3,6 +3,7 @@ package com.oracle.medrec.service.impl;
 import com.oracle.medrec.common.persistence.BasePersistenceService;
 import com.oracle.medrec.common.persistence.JPQLPersistenceSupport;
 import com.oracle.medrec.model.*;
+import com.oracle.medrec.model.Record;
 import com.oracle.medrec.service.RecordService;
 
 import javax.ejb.Stateless;

@@ -5,6 +5,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -18,6 +19,7 @@ import java.math.BigInteger;
 @NamedQuery(name = "Drug.findAllDrugs", query = "SELECT d FROM Drug d ORDER BY d.id")
 public class Drug extends VersionedEntity {
 
+  @Serial
   private static final long serialVersionUID = 3610658213331393425L;
 
   @NotNull

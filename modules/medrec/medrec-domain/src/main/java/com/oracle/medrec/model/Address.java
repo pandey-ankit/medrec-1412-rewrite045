@@ -1,6 +1,7 @@
 package com.oracle.medrec.model;
 
 import javax.persistence.Embeddable;
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -10,6 +11,7 @@ import java.io.Serializable;
 @Embeddable
 public class Address implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 4907071444700296617L;
   private String city;
   private String country;

@@ -1,7 +1,7 @@
 package com.oracle.medrec.util;
 
 import com.oracle.medrec.model.*;
-
+import com.oracle.medrec.model.Record;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;

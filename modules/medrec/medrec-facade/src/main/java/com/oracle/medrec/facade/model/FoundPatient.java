@@ -2,7 +2,7 @@ package com.oracle.medrec.facade.model;
 
 import com.oracle.medrec.model.Patient;
 import com.oracle.medrec.model.PersonName;
-
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -11,6 +11,7 @@ import java.util.Date;
  */
 public class FoundPatient extends TransferObject {
 
+  @Serial
   private static final long serialVersionUID = 48578453534L;
 
   private Long id;

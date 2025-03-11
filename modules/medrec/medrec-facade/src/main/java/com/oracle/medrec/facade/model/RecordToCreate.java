@@ -3,7 +3,7 @@ package com.oracle.medrec.facade.model;
 import com.oracle.medrec.model.Prescription;
 import com.oracle.medrec.model.Record;
 import com.oracle.medrec.model.VitalSigns;
-
+import java.io.Serial;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.LinkedList;
@@ -16,6 +16,7 @@ import java.util.List;
 @XmlRootElement
 public class RecordToCreate extends TransferObject {
 
+  @Serial
   private static final long serialVersionUID = -7485494494L;
 
   private String diagnosis;

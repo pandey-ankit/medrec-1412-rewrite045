@@ -1,5 +1,6 @@
 package com.oracle.medrec.model;
 
+import java.io.Serial;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
@@ -18,6 +19,7 @@ import javax.validation.constraints.Size;
 @MappedSuperclass
 public abstract class User extends VersionedEntity {
 
+  @Serial
   private static final long serialVersionUID = -1847921044253901787L;
 
   @NotNull

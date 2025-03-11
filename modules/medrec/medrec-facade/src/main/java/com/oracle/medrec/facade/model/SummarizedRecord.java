@@ -3,7 +3,7 @@ package com.oracle.medrec.facade.model;
 import com.oracle.medrec.common.util.DateAdapter;
 import com.oracle.medrec.model.PersonName;
 import com.oracle.medrec.model.Record;
-
+import java.io.Serial;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
@@ -15,6 +15,7 @@ import java.util.Date;
 @XmlRootElement
 public class SummarizedRecord extends TransferObject {
 
+  @Serial
   private static final long serialVersionUID = 897453345L;
 
   private Long id;

@@ -2,7 +2,7 @@ package com.oracle.medrec.service.impl.notification;
 
 import com.oracle.medrec.model.Patient;
 import com.oracle.medrec.model.PersonName;
-
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 public class PatientToNotify implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = -7606367707738700854L;
 
   private String firstName;

@@ -1,5 +1,6 @@
 package com.oracle.medrec.common.mail;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -8,6 +9,7 @@ import java.io.Serializable;
  */
 public class MailImpl implements Serializable, Mail {
 
+  @Serial
   private static final long serialVersionUID = -1037771141232265993L;
 
   private String subject;
