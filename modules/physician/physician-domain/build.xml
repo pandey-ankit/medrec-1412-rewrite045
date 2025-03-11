@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    @author Copyright (c) 2007, @COPYRIGHT_CURRENTYEAR, Oracle and/or its affiliates. All rights reserved.
+-->
+<project name="physician-domain" default="install" basedir=".">
+
+  <import file="../../module-build-commons.xml"/>
+
+</project>

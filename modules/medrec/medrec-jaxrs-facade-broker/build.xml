@@ -1,0 +1,12 @@
+<!--
+    @author Copyright (c) 2007, @COPYRIGHT_CURRENTYEAR, Oracle and/or its affiliates. All rights reserved.
+-->
+<project name="medrec-jaxrs-facade-broker" default="install" basedir=".">
+
+  <property name="archive.type" value="war"/>
+
+  <property name="nodd" value="yes"/>
+
+  <import file="../../module-build-commons.xml"/>
+
+</project>

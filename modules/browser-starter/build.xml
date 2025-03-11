@@ -1,0 +1,11 @@
+<!--
+    @author Copyright (c) 2007,2013, Oracle and/or its affiliates. All rights reserved.
+-->
+<project name="browser-starter" default="install" basedir=".">
+
+  <property name="archive.type" value="war"/>
+  <property name="need.deploy" value="true"/>
+
+  <import file="../module-build-commons.xml"/>
+
+</project>

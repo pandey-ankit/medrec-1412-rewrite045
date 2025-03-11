@@ -1,0 +1,7 @@
+<project name="medrecGAR" default="install" basedir=".">
+
+  <property name="archive.type" value="gar"/>
+
+  <import file="../module-build-commons.xml"/>
+
+</project>

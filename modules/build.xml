@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    @author Copyright (c) 2007, @COPYRIGHT_CURRENTYEAR, Oracle and/or its affiliates. All rights reserved.
+-->
+<project name="all" default="install" basedir=".">
+
+  <import file="module-build-commons.xml"/>
+
+  <target name="clean">
+    <ant dir="${basedir}/common" inheritAll="false" target="clean"/>
+    <ant dir="${basedir}/medrec" inheritAll="false" target="clean"/>
+    <ant dir="${basedir}/physician" inheritAll="false" target="clean"/>
+    <ant dir="${basedir}/chat" inheritAll="false" target="clean"/>
+    <ant dir="${basedir}/medrec-data-import" inheritAll="false" target="clean"/>
+    <ant dir="${basedir}/browser-starter" inheritAll="false" target="clean"/>
+    <ant dir="${basedir}/gar" inheritAll="false" target="clean"/>
+  </target>
+
+  <!-- only for non-MT single server-->
+  <target name="deploy" depends="install">
+    <ant dir="${basedir}/medrec" inheritAll="false" target="deploy">
+      <property name="nodep" value="true"/>
+    </ant>
+    <ant dir="${basedir}/physician" inheritAll="false" target="deploy">
+      <property name="nodep" value="true"/>
+    </ant>
+    <ant dir="${basedir}/chat" inheritAll="false" target="deploy">
+      <property name="nodep" value="true"/>
+    </ant>
+    <ant dir="${basedir}/browser-starter" inheritAll="false" target="deploy">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+</project>

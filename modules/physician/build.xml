@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    @author Copyright (c) 2007, @COPYRIGHT_CURRENTYEAR, Oracle and/or its affiliates. All rights reserved.
+-->
+<project name="physician" default="install" basedir=".">
+
+  <import file="../module-build-commons.xml"/>
+
+  <target name="clean">
+    <ant dir="${basedir}/physician-web" inheritAll="false" target="clean"/>
+    <ant dir="${basedir}/physician-domain" inheritAll="false" target="clean"/>
+    <ant dir="${basedir}/physician-assembly" inheritAll="false" target="clean"/>
+  </target>
+
+  <target name="deploy">
+    <ant dir="${basedir}/physician-assembly" inheritAll="false" target="deploy"/>
+  </target>
+
+</project>

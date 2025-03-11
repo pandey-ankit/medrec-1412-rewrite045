@@ -1,0 +1,385 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    @author Copyright (c) 2007, @COPYRIGHT_CURRENTYEAR, Oracle and/or its affiliates. All rights reserved.
+-->
+<project name="module-build-commons">
+
+  <!-- TODO remove condition check from overridable targets -->
+  <defaultexcludes add="**/.ade_path/**"/>
+
+  <typedef resource="weblogic/ant/taskdefs/antlib.xml"/>
+
+  <import file="module-build-dependencies.xml"/>
+
+  <property name="target.tmp.dir" value="${target.dir}/tmp"/>
+
+  <dirname property="project.home" file="${ant.file.module-build-commons}"/>
+  <property name="wlst.path" location="${project.home}/modules"/>
+
+  <path id="common.path">
+    <pathelement path="${java.class.path}"/>
+    <pathelement path="${generated.classes.dir}"/>
+    <fileset dir="${lib.dir}">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="${module.dist.dir}">
+      <include name="**/*.jar"/>
+      <exclude name="**/${archive}"/>
+    </fileset>
+  </path>
+
+  <target name="prepare">
+    <mkdir dir="${module.dist.dir}"/>
+    <antcall target="prepare.dependencies"/>
+    <echo message="************************************************************"/>
+    <echo message="  Building module: ${ant.project.name}..."/>
+    <echo message="************************************************************"/>
+
+    <available file="${src.dir}" type="dir" property="commons.need.build"/>
+    <available file="${test.src.dir}" type="dir" property="commons.test.available"/>
+
+    <condition property="commons.need.test">
+      <and>
+        <not>
+          <isset property="notest"/>
+        </not>
+        <isset property="commons.need.build"/>
+        <isset property="commons.test.available"/>
+      </and>
+    </condition>
+    <condition property="commons.archive.war">
+      <equals arg1="war" arg2="${archive.type}"/>
+    </condition>
+    <condition property="commons.archive.jar">
+      <equals arg1="jar" arg2="${archive.type}"/>
+    </condition>
+    <condition property="commons.archive.ear">
+      <equals arg1="ear" arg2="${archive.type}"/>
+    </condition>
+    <condition property="commons.archive.gar">
+      <equals arg1="gar" arg2="${archive.type}"/>
+    </condition>
+    <condition property="commons.deployment.exploded">
+      <equals arg1="true" arg2="${deployment.exploded}"/>
+    </condition>
+    <condition property="commons.need.package">
+      <or>
+        <isset property="commons.need.build"/>
+        <isset property="commons.archive.ear"/>
+        <isset property="commons.archive.gar"/>
+      </or>
+    </condition>
+    <condition property="useDerby">
+      <equals arg1="derby" arg2="${database}"/>
+    </condition>
+  </target>
+
+  <target name="prepare.dependencies" unless="nodep">
+    <antcall target="prepare.${ant.project.name}"/>
+  </target>
+
+  <target name="build" depends="prepare" if="commons.need.build">
+    <mkdir dir="${classes.dir}"/>
+    <mkdir dir="${generated.src.dir}"/>
+    <mkdir dir="${generated.classes.dir}"/>
+    <antcall target="pre.build"/>
+    <antcall target="do.build"/>
+    <antcall target="post.build"/>
+  </target>
+
+  <target name="build.test" depends="build" if="commons.need.test">
+    <mkdir dir="${test.classes.dir}"/>
+    <antcall target="do.build.test"/>
+  </target>
+
+  <target name="test" depends="build.test" if="commons.need.test">
+    <antcall target="pre.test"/>
+    <antcall target="do.test"/>
+    <antcall target="post.test"/>
+  </target>
+
+  <target name="package" depends="test" if="commons.need.package">
+    <antcall target="pre.package"/>
+    <antcall target="do.package"/>
+    <antcall target="post.package"/>
+  </target>
+
+  <target name="install" depends="package" if="commons.need.package">
+    <antcall target="install.module"/>
+    <antcall target="install.deployable"/>
+  </target>
+
+  <target name="install.module" unless="need.deploy">
+    <copy todir="${module.dist.dir}" file="${archive.file}" preservelastmodified="true"/>
+    <copy todir="${exploded.module.dist.dir}/${archive.name}" preservelastmodified="true">
+      <fileset dir="${archive.dir}"/>
+    </copy>
+  </target>
+
+  <target name="install.deployable" if="need.deploy">
+    <copy todir="${standalone.dist.dir}" file="${archive.file}" preservelastmodified="true"/>
+    <copy todir="${exploded.standalone.dist.dir}/${archive.name}" preservelastmodified="true">
+      <fileset dir="${archive.dir}"/>
+    </copy>
+  </target>
+
+  <target name="clean">
+    <delete dir="${target.dir}"/>
+  </target>
+
+  <target name="deploy" depends="install" if="need.deploy">
+    <antcall target="do.deploy"/>
+  </target>
+
+  <target name="redeploy" depends="install" if="need.deploy">
+    <antcall target="do.redeploy"/>
+  </target>
+
+  <target name="undeploy" if="need.deploy">
+    <antcall target="do.undeploy"/>
+  </target>
+
+  <!-- Targets that could be overriden ************************************** -->
+
+  <target name="do.build">
+    <javac destdir="${classes.dir}" compiler="${build.compiler}" source="${build.source.version}"
+           target="${build.target.version}" debug="${build.debug}" deprecation="${build.deprecation}"
+           optimize="${build.optimize}" failonerror="true" fork="true">
+      <src path="${src.dir}"/>
+      <classpath>
+        <path refid="common.path"/>
+      </classpath>
+    </javac>
+    <copy todir="${classes.dir}" failonerror="false" preservelastmodified="true">
+      <fileset dir="${resources.dir}" excludes="**/*.java"/>
+    </copy>
+  </target>
+
+  <target name="do.build.test">
+    <javac destdir="${test.classes.dir}" compiler="${build.compiler}" source="${build.source.version}"
+           target="${build.target.version}" debug="${build.debug}" deprecation="${build.deprecation}"
+           optimize="${build.optimize}" failonerror="true" fork="true">
+      <src path="${test.src.dir}"/>
+      <classpath>
+        <pathelement path="${classes.dir}"/>
+        <path refid="common.path"/>
+      </classpath>
+    </javac>
+    <copy todir="${test.classes.dir}" failonerror="false" preservelastmodified="true">
+      <fileset dir="${test.resources.dir}" excludes="**/*.java"/>
+    </copy>
+  </target>
+
+  <!--The target for running unit tests with JUnit 5 framework-->
+  <path id="junit.engine.jupiter.classpath">
+    <fileset dir="${lib.dir}/test"/>
+  </path>
+  <property name="test.output.dir" value="${target.dir}/test-output"/>
+  <target name="do.test">
+    <echo message="/////////////////////////////////////////////////////////////////"/>
+    <echo message="If junit task cannot be found, simply re-issue your target again."/>
+    <echo message="\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"/>
+    <copy todir="${env.ANT_HOME}/lib">
+      <fileset dir="${lib.dir}/test"/>
+    </copy>
+    <mkdir dir="${test.output.dir}"/>
+    <junitlauncher>
+      <classpath refid="junit.engine.jupiter.classpath"/>
+      <classpath>
+        <pathelement path="${test.classes.dir}"/>
+        <pathelement path="${classes.dir}"/>
+        <path refid="common.path"/>
+      </classpath>
+      <testclasses outputdir="${test.output.dir}">
+        <fileset dir="${test.classes.dir}">
+          <include name="com/oracle/medrec/**/"/>
+        </fileset>
+        <listener type="legacy-brief" sendSysOut="true"/>
+        <listener type="legacy-plain" sendSysErr="true" sendSysOut="true"/>
+      </testclasses>
+    </junitlauncher>
+  </target>
+
+  <target name="do.package">
+    <antcall target="do.package.jar"/>
+    <antcall target="do.package.war"/>
+    <antcall target="do.package.gar"/>
+    <antcall target="do.package.ear"/>
+  </target>
+
+  <!-- TODO performance -->
+
+  <target name="do.package.jar" if="commons.archive.jar">
+    <jar destfile="${archive.file}" filesonly="true" duplicate="fail" includes="**/*.*">
+      <fileset dir="${classes.dir}"/>
+      <fileset dir="${generated.classes.dir}"/>
+      <manifest>
+        <attribute name="Specification-Vendor" value="Oracle Corporation"/>
+        <attribute name="Implementation-Vendor" value="Oracle Corporation"/>
+      </manifest>
+    </jar>
+    <unzip src="${archive.file}" dest="${archive.dir}" overwrite="false"/>
+  </target>
+
+  <target name="do.package.gar" if="commons.archive.gar">
+    <jar destfile="${archive.file}" filesonly="true" duplicate="fail" includes="**/*.*">
+      <fileset dir="${resources.dir}"/>
+    </jar>
+    <unzip src="${archive.file}" dest="${archive.dir}" overwrite="false"/>
+  </target>
+
+  <target name="do.package.war" if="commons.archive.war">
+    <mkdir dir="${target.tmp.dir}/WEB-INF/classes"/>
+    <copy todir="${target.tmp.dir}/WEB-INF/classes" preservelastmodified="true">
+      <fileset dir="${classes.dir}"/>
+      <fileset dir="${generated.classes.dir}"/>
+    </copy>
+    <condition property="commons.archive.war.lib">
+      <equals arg1="yes" arg2="${web-lib}"/>
+    </condition>
+    <antcall target="package.war.lib"/>
+
+    <condition property="commons.archive.war.nodd">
+      <equals arg1="yes" arg2="${nodd}"/>
+    </condition>
+    <antcall target="do.package.war.nodd"/>
+    <antcall target="do.package.war.dd"/>
+    <delete dir="${target.tmp.dir}"/>
+    <unzip src="${archive.file}" dest="${archive.dir}" overwrite="false"/>
+  </target>
+
+  <target name="package.war.lib" if="commons.archive.war.lib">
+    <mkdir dir="${target.tmp.dir}/WEB-INF/lib"/>
+    <copy todir="${target.tmp.dir}/WEB-INF/lib" preservelastmodified="true">
+      <fileset dir="${module.dist.dir}" includes="${web-libs}"/>
+    </copy>
+  </target>
+
+  <target name="do.package.war.nodd" if="commons.archive.war.nodd">
+    <war destfile="${archive.file}" duplicate="fail" needxmlfile="false">
+      <fileset dir="${webapp.dir}"/>
+      <fileset dir="${target.tmp.dir}"/>
+    </war>
+  </target>
+
+  <target name="do.package.war.dd" unless="commons.archive.war.nodd">
+    <war destfile="${archive.file}" duplicate="fail" webxml="${webapp.dir}/WEB-INF/web.xml">
+      <fileset dir="${webapp.dir}" excludes="**/web.xml"/>
+      <fileset dir="${target.tmp.dir}"/>
+    </war>
+  </target>
+
+  <target name="do.package.ear" if="commons.archive.ear">
+    <mkdir dir="${runtime.lib.dir}"/>
+    <mkdir dir="${target.tmp.dir}/lib"/>
+    <copy todir="${target.tmp.dir}/lib" preservelastmodified="true">
+      <fileset dir="${runtime.lib.dir}"/>
+      <fileset dir="${module.dist.dir}" includes="${applib.modules}"/>
+    </copy>
+    <ear destfile="${archive.file}" duplicate="preserve" appxml="${ear.dir}/META-INF/application.xml">
+      <fileset dir="${module.dist.dir}" includes="${app.modules}"/>
+      <fileset dir="${ear.dir}" excludes="**/application.xml"/>
+      <fileset dir="${target.tmp.dir}"/>
+    </ear>
+    <delete dir="${target.tmp.dir}"/>
+    <mkdir dir="${archive.dir}/lib"/>
+    <!-- TODO applib doesn't get expanded -->
+    <copy todir="${archive.dir}/lib" preservelastmodified="true">
+      <fileset dir="${runtime.lib.dir}"/>
+      <fileset dir="${module.dist.dir}" includes="${applib.modules}"/>
+    </copy>
+
+    <copy todir="${archive.dir}" preservelastmodified="true">
+      <!--<fileset dir="${exploded.module.dist.dir}" includes="${app.modules}"/>-->
+      <fileset dir="${ear.dir}"/>
+    </copy>
+  </target>
+
+  <target name="do.deploy">
+    <antcall target="do.deploy.file"/>
+    <antcall target="do.deploy.dir"/>
+  </target>
+
+
+  <target name="do.deploy.file" unless="commons.deployment.exploded">
+    <echo message="Deploying ${archive.file}..."/>
+    <echo message="The value of deploymentorder: ${deploymentorder}"/>
+
+    <antcall target="do.deploy.file.wldeploy"/>
+    <antcall target="do.deploy.file.wlst"/>
+  </target>
+
+  <target name="do.deploy.dir" if="commons.deployment.exploded">
+    <echo message="Deploying ${archive}..."/>
+    <echo message="The value of deploymentorder: ${deploymentorder}"/>
+
+    <antcall target="do.deploy.dir.wldeploy"/>
+    <antcall target="do.deploy.dir.wlst"/>
+  </target>
+
+  <target name="do.deploy.file.wldeploy" unless="deploymentorder">
+    <wldeploy user="${admin.server.username}" password="${admin.server.password}"
+              adminurl="t3://${admin.server.host}:${admin.server.port}" action="deploy"
+              name="${archive.name}" source="${archive.file}" targets="${admin.server.name}" securityModel="DDOnly"
+              nostage="true" verbose="true" debug="true"/>
+  </target>
+
+  <target name="do.deploy.file.wlst" if="deploymentorder">
+    <java classname="weblogic.WLST" fork="yes" failonerror="true">
+      <arg
+          line="${wlst.path}/deploywlst.py ${admin.server.host} ${admin.server.port} ${admin.server.username} ${admin.server.password} ${admin.server.name} ${archive.name} ${archive.file} ${deploymentorder}"/>
+    </java>
+  </target>
+
+  <target name="do.deploy.dir.wldeploy" unless="deploymentorder">
+    <wldeploy user="${admin.server.username}" password="${admin.server.password}"
+              adminurl="t3://${admin.server.host}:${admin.server.port}" action="deploy"
+              name="${archive.name}" source="${archive.dir}" targets="${admin.server.name}" securityModel="DDOnly"
+              nostage="true" verbose="true" debug="true"/>
+  </target>
+
+  <target name="do.deploy.dir.wlst" if="deploymentorder">
+    <java classname="weblogic.WLST" fork="yes" failonerror="true">
+      <arg
+          line="${wlst.path}/deploywlst.py ${admin.server.host} ${admin.server.port} ${admin.server.username} ${admin.server.password} ${admin.server.name} ${archive.name} ${archive.dir} ${deploymentorder}"/>
+    </java>
+  </target>
+
+  <target name="do.redeploy">
+    <antcall target="do.redeploy.file"/>
+    <antcall target="do.redeploy.dir"/>
+  </target>
+
+  <target name="do.redeploy.file" unless="commons.deployment.exploded">
+    <wldeploy user="${admin.server.username}" password="${admin.server.password}"
+              adminurl="t3://${admin.server.host}:${admin.server.port}" action="redeploy"
+              name="${archive.name}" source="${archive.file}" targets="${admin.server.name}" verbose="true"
+              debug="true"/>
+  </target>
+
+  <target name="do.redeploy.dir" if="commons.deployment.exploded">
+    <wldeploy user="${admin.server.username}" password="${admin.server.password}"
+              adminurl="t3://${admin.server.host}:${admin.server.port}" action="redeploy"
+              name="${archive.name}" source="${archive.dir}" targets="${admin.server.name}" verbose="true"
+              debug="true"/>
+  </target>
+
+  <target name="do.undeploy">
+    <wldeploy user="${admin.server.username}" password="${admin.server.password}"
+              adminurl="t3://${admin.server.host}:${admin.server.port}" action="undeploy"
+              name="${archive.name}" targets="${admin.server.name}" verbose="true" debug="true"/>
+  </target>
+
+  <target name="pre.build"/>
+
+  <target name="post.build"/>
+
+  <target name="pre.package"/>
+
+  <target name="post.package"/>
+
+  <target name="pre.test"/>
+
+  <target name="post.test"/>
+
+</project>

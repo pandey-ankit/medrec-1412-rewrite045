@@ -1,0 +1,14 @@
+<!--
+    @author Copyright (c) 2007,2013, Oracle and/or its affiliates. All rights reserved.
+-->
+<project name="physician-web" default="install" basedir=".">
+
+  <property name="archive.type" value="war"/>
+
+  <property name="web-lib" value="yes"/>
+
+  <property name="web-libs" value="medrec-domain.jar, medrec-facade.jar, physician-domain.jar"/>
+
+  <import file="../../module-build-commons.xml"/>
+
+</project>

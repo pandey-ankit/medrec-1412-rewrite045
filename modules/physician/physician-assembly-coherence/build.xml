@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    @author Copyright (c) 2007, @COPYRIGHT_CURRENTYEAR, Oracle and/or its affiliates. All rights reserved.
+-->
+<project name="physician-assembly-coherence" default="install" basedir=".">
+
+  <property name="archive.type" value="ear"/>
+
+  <property name="archive.name.prefix" value="physician-coherence"/>
+
+  <property name="app.modules" value="common.jar, physician-web.war, medrecGAR.gar"/>
+
+  <property name="need.deploy" value="true"/>
+
+  <import file="../../module-build-commons.xml"/>
+
+</project>

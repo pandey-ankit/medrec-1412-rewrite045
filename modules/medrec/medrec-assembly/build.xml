@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    @author Copyright (c) 2007, @COPYRIGHT_CURRENTYEAR, Oracle and/or its affiliates. All rights reserved.
+-->
+<project name="medrec-assembly" default="install" basedir=".">
+
+  <property name="archive.type" value="ear"/>
+
+  <property name="archive.name.prefix" value="medrec"/>
+
+  <!-- Use full names since now we have got medrec-data-import -->
+  <property name="app.modules"
+            value="common.jar, medrec-domain-impl.jar, medrec-facade-impl.jar, medrec-jaxrs-facade-broker.war, medrec-jaxws-facade-broker.war, medrec-web.war"/>
+
+  <property name="applib.modules" value="medrec-domain.jar, medrec-facade.jar"/>
+
+  <property name="need.deploy" value="true"/>
+
+  <property name="deploymentorder" value="50"/>
+
+  <import file="../../module-build-commons.xml"/>
+
+</project>

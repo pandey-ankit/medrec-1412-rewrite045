@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+ @author Copyright (c) 2007,2013, Oracle and/or its affiliates. All rights reserved.
+ -->
+<project name="medrec-data-import" default="install" basedir=".">
+
+  <import file="../module-build-commons.xml"/>
+
+  <property name="log.dir" value="${target.dir}/logs"/>
+  <!-- Override for eclipselink patch, if necessary -->
+  <typedef resource="net/sf/antcontrib/antlib.xml"/>
+
+  <target name="data.importer.invoke">
+    <antcall target="data.importer.run"/>
+  </target>
+
+  <target name="data.importer.prepare">
+    <echo message="wls.home=${wls.home}"/>
+    <echo message="classes.dir=${classes.dir}"/>
+    <echo message="src.dir=${src.dir}"/>
+    <mkdir dir="${classes.dir}"/>
+    <javac destdir="${classes.dir}" compiler="${build.compiler}" source="${build.source.version}" failonerror="true"
+           fork="true">
+      <src path="${src.dir}"/>
+      <include name="**/DataImporter.java"/>
+      <classpath>
+        <path refid="common.path"/>
+      </classpath>
+    </javac>
+    <mkdir dir="${classes.dir}/META-INF"/>
+    <copy todir="${classes.dir}/META-INF">
+      <fileset dir="${resources.dir}/META-INF"/>
+    </copy>
+  </target>
+
+  <target name="data.importer.run">
+    <java classname="com.oracle.medrec.util.DataImporter" fork="true" failonerror="true">
+      <classpath>
+        <pathelement path="${wls.home}/server/lib/weblogic.jar"/>
+        <pathelement path="${classes.dir}"/>
+        <pathelement path="${wls.home}/common/derby/lib/derbyclient.jar"/>
+        <path refid="common.path"/>
+      </classpath>
+    </java>
+  </target>
+
+  <target name="modify.persistenceDD" description="modify persistence.xml">
+    <!--modify persistence file for initiating database-->
+    <echo message="url      = ${db.url}"/>
+    <echo message="driver   = ${db.driver}"/>
+    <echo message="user     = ${db.user}"/>
+    <echo message="password = ${db.password}"/>
+    <mkdir dir="${classes.dir}/META-INF"/>
+    <copy file="${basedir}/data-import-persistence.template"
+          tofile="${classes.dir}/META-INF/persistence.xml" overwrite="true">
+      <filterset>
+        <filter token="driver" value="${db.driver}"/>
+        <filter token="url" value="${db.url}"/>
+        <filter token="user" value="${db.user}"/>
+        <filter token="password" value="${db.password}"/>
+      </filterset>
+    </copy>
+  </target>
+
+  <target name="data.importer.specific" description="import data with specific db properties">
+    <antcall target="modify.persistenceDD"/>
+    <antcall target="data.importer.run"/>
+  </target>
+
+
+  <target name="data.importer.pdb">
+    <antcall target="data.importer.prepare"/>
+    <antcall target="data.importer.adjustDD"/>
+    <antcall target="data.importer.run"/>
+  </target>
+
+  <target name="data.importer.adjustDD">
+    <!--
+     Adjust some of the persistence unit settings
+     to reflect the PDB-related properties.
+
+     Create a temp
+     file containing only those property settings
+     to override (compared to properties already in
+     the META-INF/persistence.xml descriptor).
+
+     Then use XSLT to transform the original
+     persistence.xml into a new one using the
+     replacement property settings in the temp file.
+     -->
+    <tempfile property="pdbPropSettings" prefix="pdb" suffix=".xml"/>
+    <concat destfile="${pdbPropSettings}"><![CDATA[
+            <map:entries
+            xmlns:map="http://map.data">
+            <map:entry map:property="javax.persistence.jdbc.driver" map:value="oracle.jdbc.OracleDriver"/>
+            <map:entry map:property="javax.persistence.jdbc.url" map:value="jdbc:oracle:thin://@${pdbHost}:${pdbPort}/${pdbServiceName}"/>
+            <map:entry map:property="javax.persistence.jdbc.user" map:value="${pdbUserName}"/>
+            <map:entry map:property="javax.persistence.jdbc.password" map:value="${pdbPassword}"/>
+            </map:entries>]]>
+    </concat>
+    <xslt style="adjustPersistenceForPDB.xsl"
+          in="${resources.dir}/META-INF/persistence.xml"
+          out="${classes.dir}/META-INF/persistence.xml"
+          force="true">
+      <param name="propConverterFile" expression="${pdbPropSettings}"/>
+    </xslt>
+
+    <delete file="${pdbPropSettings}"/>
+  </target>
+</project>

@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    @author Copyright (c) 2007, @COPYRIGHT_CURRENTYEAR, Oracle and/or its affiliates. All rights reserved.
+-->
+<project name="module-build-dependencies">
+
+  <import file="../build-preparation.xml"/>
+
+  <!-- Common ************************************** -->
+
+  <target name="prepare.common" depends="banner"/>
+
+  <target name="install.common" depends="prepare.common">
+    <ant dir="${module.home}/common" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <!-- MedRec ************************************* -->
+
+  <target name="prepare.medrec-assembly"
+          depends="install.medrec-jaxws-facade-broker, install.medrec-jaxrs-facade-broker, install.medrec-web"/>
+
+  <target name="prepare.medrec" depends="install.medrec-assembly"/>
+
+  <target name="prepare.medrec-domain" depends="install.common"/>
+
+  <target name="prepare.medrec-domain-impl" depends="install.medrec-domain"/>
+
+  <target name="prepare.medrec-facade" depends="install.medrec-domain-impl"/>
+
+  <target name="prepare.medrec-facade-impl" depends="install.medrec-facade"/>
+
+  <target name="prepare.medrec-jaxws-facade-broker" depends="install.medrec-facade-impl"/>
+
+  <target name="prepare.medrec-jaxrs-facade-broker" depends="install.medrec-facade-impl"/>
+
+  <target name="prepare.medrec-web" depends="install.medrec-domain-impl"/>
+
+  <target name="install.medrec-facade" depends="prepare.medrec-facade">
+    <ant dir="${module.home}/medrec/medrec-facade" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <target name="install.medrec-facade-impl" depends="prepare.medrec-facade-impl">
+    <ant dir="${module.home}/medrec/medrec-facade-impl" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <target name="install.medrec-domain" depends="prepare.medrec-domain">
+    <ant dir="${module.home}/medrec/medrec-domain" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <target name="install.medrec-domain-impl" depends="prepare.medrec-domain-impl">
+    <ant dir="${module.home}/medrec/medrec-domain-impl" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <target name="install.medrec-web" depends="prepare.medrec-web">
+    <ant dir="${module.home}/medrec/medrec-web" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <target name="install.medrec-jaxws-facade-broker" depends="prepare.medrec-jaxws-facade-broker">
+    <ant dir="${module.home}/medrec/medrec-jaxws-facade-broker" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <target name="install.medrec-jaxrs-facade-broker" depends="prepare.medrec-jaxrs-facade-broker">
+    <ant dir="${module.home}/medrec/medrec-jaxrs-facade-broker" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <target name="install.medrec-assembly" depends="prepare.medrec-assembly">
+    <ant dir="${module.home}/medrec/medrec-assembly" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <target name="install.medrec" depends="prepare.medrec">
+    <ant dir="${module.home}/medrec" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+
+  <!-- Physician ************************************* -->
+
+  <target name="prepare.physician-assembly" depends="install.physician-web"/>
+
+  <target name="prepare.physician" depends="install.physician-assembly"/>
+
+  <target name="prepare.physician-domain"/>
+
+  <target name="prepare.physician-web" depends="install.physician-domain"/>
+
+  <target name="install.physician-web" depends="prepare.physician-web">
+    <ant dir="${module.home}/physician/physician-web" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <target name="install.physician-domain" depends="prepare.physician-domain">
+    <ant dir="${module.home}/physician/physician-domain" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <target name="install.physician-assembly" depends="prepare.physician-assembly">
+    <ant dir="${module.home}/physician/physician-assembly" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <target name="install.physician" depends="prepare.physician">
+    <ant dir="${module.home}/physician" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <!-- chat ************************************************ -->
+
+  <target name="prepare.chat"/>
+
+  <target name="install.chat">
+    <ant dir="${module.home}/chat" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <!-- MedRec Data Import *********************************** -->
+
+  <target name="prepare.medrec-data-import" depends="install.medrec-domain"/>
+
+  <target name="install.medrec-data-import" depends="prepare.medrec-data-import">
+    <ant dir="${module.home}/medrec-data-import" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <!-- Browser Starter *********************************** -->
+
+  <target name="prepare.browser-starter"/>
+
+  <target name="install.browser-starter" depends="prepare.browser-starter">
+    <ant dir="${module.home}/browser-starter" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <!-- Coherence GAR *********************************** -->
+
+  <target name="prepare.gar"/>
+
+  <target name="install.gar" depends="prepare.gar">
+    <ant dir="${module.home}/gar" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <target name="prepare.physician-assembly-coherence" depends="install.gar"/>
+
+  <target name="install.physician-assembly-coherence" depends="prepare.physician-assembly-coherence">
+    <ant dir="${module.home}/physician/physician-assembly-coherence" antfile="build.xml" inheritAll="false">
+      <property name="nodep" value="true"/>
+    </ant>
+  </target>
+
+  <target name="prepare.coherence"
+          depends="install.medrec, install.physician, install.medrec-data-import, install.physician-assembly-coherence"/>
+
+  <target name="install.coherence" depends="prepare.coherence"/>
+
+  <!-- All modules *********************************** -->
+
+  <target name="prepare.all" depends="install.medrec, install.physician, install.chat, install.medrec-data-import, 
+      install.gar, install.physician-assembly-coherence, install.browser-starter"/>
+
+</project>
